@@ -232,6 +232,7 @@ class Base extends Controller
         }
     }
  }
+ 
 ```
 
 > 在数据库中添加的节点规则格式为： “模块-控制器名称-方法名称”，Auth类还可以多个规则一起认证 如： 
@@ -242,17 +243,22 @@ $auth->check('rule1,rule2',uid);
 > 表示 认证用户只要有rule1的权限或rule2的权限，只要有一个规则的权限，认证返回结果就为true 即认证通过。 默认多个权限的关系是 “or” 关系，也就是说多个权限中，只要有个权限通过则通过。 我们也可以定义为 “and” 关系
 ```
 $auth->check('rule1,rule2',uid,'and'); 
+
 ```
 > 第三个参数指定为"and" 表示多个规则以and关系进行认证， 这时候多个规则同时通过认证才有权限。只要一个规则没有权限则就会返回false。
 
 > Auth认证，一个用户可以属于多个用户组。 比如我们对 show_button这个规则进行认证， 用户A 同时属于 用户组1 和用户组2 两个用户组 ， 用户组1 没有show_button 规则权限， 但如果用户组2 有show_button 规则权限，则一样会权限认证通过。 
 ```
 $auth->getGroups(uid)
-```
+
+```  
+
 > 通过上面代码，可以获得用户所属的所有用户组，方便我们在网站上面显示。Auth类还可以按用户属性进行判断权限， 比如按照用户积分进行判断， 假设我们的用户表(think_member)有字段score记录了用户积分。我在规则表添加规则时，定义规则表的condition字段，condition字段是规则条件，默认为空 表示没有附加条件，用户组中只有规则就通过认证。如果定义了condition字段，用户组中有规则不一定能通过认证，程序还会判断是否满足附加条件。比如我们添加几条规则： 
 
-> `name`字段：grade1 `condition`字段：{points}<100 <br/>
-> `name`字段：grade2 `condition`字段：{points}>100 and {points}<200<br/>
-> `name`字段：grade3 `condition`字段：{points}>200 and {points}<300
+```
+`name`字段：grade1 `condition`字段：{points}<100 <br/>
+`name`字段：grade2 `condition`字段：{points}>100 and {points}<200<br/>
+`name`字段：grade3 `condition`字段：{points}>200 and {points}<300
+```  
 
-这里 `{points}` 表示 `think_members` 表 中字段 `points` 的值。 
+> 这里 `{points}` 表示 `think_members` 表 中字段 `points` 的值。 
