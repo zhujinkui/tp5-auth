@@ -1,14 +1,11 @@
 # tp5-auth
 这是一个基于ThinkPHP5框架的Auth类库
 
-# auth
-ThinkPHP5 Auth Package
-
 ## 安装
 > composer require zhujinkui/tp5-auth
 
 ## 配置
-将目录下auth.php配置文件复制到TP5框架定义应用目录(默认：application)/extra下,如无extra文件，创建一个即可
+将目录下auth.php配置文件复制到TP5框架定义应用目录(默认：application,如修改则填写修改名称即可)，例如：application/extra下,如无extra文件，创建一个即可。
 ```
 // 配置文件      
 // +----------------------------------------------------------------------
