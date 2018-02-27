@@ -1,20 +1,34 @@
 # tp5-auth
-这是一个基于ThinkPHP5框架的Auth类库
+> 这是一个基于ThinkPHP5框架的Auth类库
 
 ## 案例展示
-基于ThinkPHP5开发呈现权限管理的效果
-![Image text](http://www.uc22.net/public/index/images/auth_2.png)
+> 基于ThinkPHP5开发呈现权限管理的效果  
+![Image text](http://www.uc22.net/public/index/images/auth_2.png)  
 ![Image text](http://www.uc22.net/public/index/images/auth_3.png)
 
 ## 安装
 > composer require zhujinkui/tp5-auth
 
 ## 说明
-AUTH（基于用户角色的访问控制），就是用户通过角色与权限进行关联。简单地说，一个用户拥有若干角色，每一个角色拥有若干权限。这样，就构造成“用户-角色-权限”的授权模型。在这种模型中，用户与角色之间，角色与权限之间，一般者是多对多的关系。（如下图）  
-![Image text](http://www.uc22.net/public/index/images/auth_1.png)
+> AUTH（基于用户角色的访问控制），就是用户通过角色与权限进行关联。简单地说，一个用户拥有若干角色，每一个角色拥有若干权限。这样，就构造成“用户-角色-权限”的授权模型。在这种模型中，用户与角色之间，角色与权限之间，一般者是多对多的关系。（如下图）  
+![Image text](http://www.uc22.net/public/index/images/auth_1.png)  
+
+## 原理
+> Auth权限认证是按规则进行认证,在数据库中我们有:
+
+- 认证规则表 （think_auth_rule） 
+- 认证用户组表 (think_auth_group) 
+- 认证用户组授权权限表（think_auth_group_access）
+
+> 我们在认证规则表中定义权限规则， 在认证用户组表中定义每个用户组有哪些权限规则，在认证用户组授权权限表中定义用户所属的用户组。 
+
+> 举例说明：
+> 我们要判断用户是否有显示一个操作按钮的权限， 首先定义一个规则， 在规则表中添加一个名为 show_button 的规则。然后在认证用户组表添加一个用户组，定义这个用户组有show_button 的权限规则（think_auth_group表中rules字段存得时规则ID，多个以逗号隔开）， 然后在用户组明细表定义 UID 为1 的用户 属于刚才这个的这个用户组。 
+
 
 ## 配置
-将目录下auth.php配置文件复制到TP5框架定义应用目录(默认：application,如修改则填写修改名称即可)，例如：application/extra下,如无extra文件，创建一个即可。
+> 将目录下auth.php配置文件复制到TP5框架定义应用目录(默认：application,如修改则填写修改名称即可)，例如：application/extra下,如无extra文件，创建一个即可。  
+
 ```
 // 配置文件      
 // +----------------------------------------------------------------------
@@ -191,88 +205,54 @@ CREATE TABLE IF NOT EXISTS `think_member` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 
 ```
-## 原理
-Auth权限认证是按规则进行认证。
-在数据库中我们有 
 
-- 规则表（think_auth_rule） 
-- 用户组表(think_auth_group) 
-- 用户组明显表（think_auth_group_access）
-
-我们在规则表中定义权限规则， 在用户组表中定义每个用户组有哪些权限规则，在用户组明显表中定义用户所属的用户组。 
-
-下面举例说明：
-
-我们要判断用户是否有显示一个操作按钮的权限， 首先定义一个规则， 在规则表中添加一个名为 show_button 的规则。 然后在用户组表添加一个用户组，定义这个用户组有show_button 的权限规则（think_auth_group表中rules字段存得时规则ID，多个以逗号隔开）， 然后在用户组明细表定义 UID 为1 的用户 属于刚才这个的这个用户组。 
-
-## 使用
-判断权限方法
-```
-// 引入类库
-use think\auth\Auth;
-
-// 获取auth实例
-$auth = Auth::instance();
-
-// 检测权限
-if($auth->check('show_button',1)){// 第一个参数是规则名称,第二个参数是用户UID
-	//有显示操作按钮的权限
-}else{
-	//没有显示操作按钮的权限
-}
-```
-
-Auth类也可以对节点进行认证，我们只要将规则名称，定义为节点名称就行了。 
-可以在公共控制器Base中定义_initialize方法
+## 代码举例使用
+> 建立Base控制器作为所有模块基类
 ```
 <?php
+namespace app\common\controller;
+
 use think\Controller;
 use think\auth\Auth;
+
 class Base extends Controller
 {
     public function _initialize()
 	{
-		$controller = request()->controller();
-		$action = request()->action();
-		$auth = new Auth();
-		if(!$auth->check($controller . '-' . $action, session('uid'))){
-			$this->error('你没有权限访问');
-		}
+		// 自动动态获取URL需要自行处理
+		$url = "Admin/Index/index";
+		// 自动动态获取用户UID需要自行处理
+		$uuid = 1;
+
+		//实力化权限类库
+        $auth =  new \auth\Auth();
+
+        if (!$auth->check($url, $uuid)) {
+            $this->error('没有权限！');
+        }
     }
  }
 ```
-这时候我们可以在数据库中添加的节点规则， 格式为： “控制器名称-方法名称”
 
-Auth 类 还可以多个规则一起认证 如： 
+> 在数据库中添加的节点规则格式为： “模块-控制器名称-方法名称”，Auth类还可以多个规则一起认证 如： 
 ```
 $auth->check('rule1,rule2',uid); 
+
 ```
-表示 认证用户只要有rule1的权限或rule2的权限，只要有一个规则的权限，认证返回结果就为true 即认证通过。 默认多个权限的关系是 “or” 关系，也就是说多个权限中，只要有个权限通过则通过。 我们也可以定义为 “and” 关系
+> 表示 认证用户只要有rule1的权限或rule2的权限，只要有一个规则的权限，认证返回结果就为true 即认证通过。 默认多个权限的关系是 “or” 关系，也就是说多个权限中，只要有个权限通过则通过。 我们也可以定义为 “and” 关系
 ```
 $auth->check('rule1,rule2',uid,'and'); 
 ```
-第三个参数指定为"and" 表示多个规则以and关系进行认证， 这时候多个规则同时通过认证才有权限。只要一个规则没有权限则就会返回false。
+> 第三个参数指定为"and" 表示多个规则以and关系进行认证， 这时候多个规则同时通过认证才有权限。只要一个规则没有权限则就会返回false。
 
-Auth认证，一个用户可以属于多个用户组。 比如我们对 show_button这个规则进行认证， 用户A 同时属于 用户组1 和用户组2 两个用户组 ， 用户组1 没有show_button 规则权限， 但如果用户组2 有show_button 规则权限，则一样会权限认证通过。 
+> Auth认证，一个用户可以属于多个用户组。 比如我们对 show_button这个规则进行认证， 用户A 同时属于 用户组1 和用户组2 两个用户组 ， 用户组1 没有show_button 规则权限， 但如果用户组2 有show_button 规则权限，则一样会权限认证通过。 
 ```
 $auth->getGroups(uid)
 ```
-通过上面代码，可以获得用户所属的所有用户组，方便我们在网站上面显示。
+> 通过上面代码，可以获得用户所属的所有用户组，方便我们在网站上面显示。Auth类还可以按用户属性进行判断权限， 比如按照用户积分进行判断， 假设我们的用户表(think_member)有字段score记录了用户积分。我在规则表添加规则时，定义规则表的condition字段，condition字段是规则条件，默认为空 表示没有附加条件，用户组中只有规则就通过认证。如果定义了condition字段，用户组中有规则不一定能通过认证，程序还会判断是否满足附加条件。比如我们添加几条规则： 
 
-Auth类还可以按用户属性进行判断权限， 比如
-按照用户积分进行判断， 假设我们的用户表 (think_members) 有字段 score 记录了用户积分。 
-我在规则表添加规则时，定义规则表的condition 字段，condition字段是规则条件，默认为空 表示没有附加条件，用户组中只有规则 就通过认证。
-如果定义了 condition字段，用户组中有规则不一定能通过认证，程序还会判断是否满足附加条件。
-比如我们添加几条规则： 
+> `name`字段：grade1 `condition`字段：{points}<100 <br/>
+> `name`字段：grade2 `condition`字段：{points}>100 and {points}<200<br/>
+> `name`字段：grade3 `condition`字段：{points}>200 and {points}<300
 
-> `name`字段：grade1 `condition`字段：{score}<100 <br/>
-> `name`字段：grade2 `condition`字段：{score}>100 and {score}<200<br/>
-> `name`字段：grade3 `condition`字段：{score}>200 and {score}<300
-
-这里 `{score}` 表示 `think_members` 表 中字段 `score` 的值。 
-
-那么这时候 
-
-> $auth->check('grade1', uid) 是判断用户积分是不是0-100<br/>
-> $auth->check('grade2', uid) 判断用户积分是不是在100-200<br/>
-> $auth->check('grade3', uid) 判断用户积分是不是在200-300
+这里 `{points}` 表示 `think_members` 表 中字段 `points` 的值。 
