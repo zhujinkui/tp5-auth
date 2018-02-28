@@ -3,8 +3,8 @@
 
 ## 案例展示
 > 基于ThinkPHP5开发呈现权限管理的效果  
-![Image text](http://www.uc22.net/public/index/images/auth_2.png)  
-![Image text](http://www.uc22.net/public/index/images/auth_3.png)
+![Image text](http://www.uc22.net/public/index/images/auth_2.jpg)  
+![Image text](http://www.uc22.net/public/index/images/auth_3.jpg)
 
 ## 安装
 > composer require zhujinkui/tp5-auth
