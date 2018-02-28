@@ -11,7 +11,7 @@
 
 ## 说明
 > AUTH（基于用户角色的访问控制），就是用户通过角色与权限进行关联。简单地说，一个用户拥有若干角色，每一个角色拥有若干权限。这样，就构造成“用户-角色-权限”的授权模型。在这种模型中，用户与角色之间，角色与权限之间，一般者是多对多的关系。（如下图）  
-![Image text](http://www.uc22.net/public/index/images/auth_1.png)  
+![Image text](http://www.uc22.net/public/index/images/auth_1.jpg)  
 
 ## 原理
 > Auth权限认证是按规则进行认证,在数据库中我们有:
