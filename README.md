@@ -211,9 +211,7 @@ CREATE TABLE IF NOT EXISTS `think_member` (
 ```
 <?php
 namespace app\common\controller;
-
 use think\Controller;
-use think\auth\Auth;
 
 class Base extends Controller
 {
@@ -225,7 +223,7 @@ class Base extends Controller
 		$uuid = 1;
 
 		//实力化权限类库
-        $auth =  new \auth\Auth();
+        $auth =  new \think\auth\Auth();
 
         if (!$auth->check($url, $uuid)) {
             $this->error('没有权限！');
