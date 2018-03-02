@@ -8,7 +8,7 @@
 // | Author: zhujinkui <developer@zhujinkui.com>
 // +----------------------------------------------------------------------
 
-namespace think\auth;
+namespace think;
 
 use think\Db;
 use think\Config;

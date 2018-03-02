@@ -27,7 +27,7 @@
 
 
 ## 配置
-> 将目录下auth.php配置文件复制到TP5框架定义应用目录(默认：application,如修改则填写修改名称即可)，例如：application/extra下,如无extra文件，创建一个即可。  
+> 将目录下config/auth.php配置文件复制到TP5框架定义应用目录(默认：application,如修改则填写修改名称即可)，例如：application/extra下,如无extra文件，创建一个即可。  
 
 ```
 // 配置文件      
@@ -223,7 +223,7 @@ class Base extends Controller
 		$uuid = 1;
 
 		//实力化权限类库
-        $auth =  new \think\auth\Auth();
+        $auth =  new \think\Auth();
 
         if (!$auth->check($url, $uuid)) {
             $this->error('没有权限！');

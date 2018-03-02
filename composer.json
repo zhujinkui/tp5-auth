@@ -2,7 +2,7 @@
     "name": "zhujinkui/tp5-auth",
     "description": "This is a Auth class library based on the ThinkPHP5 framework",
     "type": "library",
-    "license": "MIT",
+    "license": "Apache-2.0",
     "authors": [
         {
             "name": "zhujinkui",
@@ -15,7 +15,7 @@
     },
     "autoload": {
         "psr-4": {
-            "think\\auth\\": "src/"
+            "think\\": "src/"
         }
     }
 }
