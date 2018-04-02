@@ -1,7 +1,7 @@
 <?php
-// 权限类库     
+// 权限类库
 // +----------------------------------------------------------------------
-// | PHP version 5.4+                
+// | PHP version 5.4+
 // +----------------------------------------------------------------------
 // | Copyright (c) 2012-2014 http://www.17php.cn, All rights reserved.
 // +----------------------------------------------------------------------
@@ -52,17 +52,17 @@ class Auth
      */
     protected $configs = [
         // 权限开关
-        'auth_on'           => true,                          
+        'auth_on'           => true,
         // 认证方式：1为实时认证；每次验证，都重新读取数据库内的权限数据，如果对权限验证非常敏感的，建议使用实时验证;2为登录认证 (即登录成功后，就把该用户用户的权限规则获取并保存到 session，之后就根据 session 值做权限验证判断)
         'auth_type'         => 1,
         // 角色用户组数据表名
         'auth_group'        => 'auth_group',
-        // 用户-角色用户组关系表             
+        // 用户-角色用户组关系表
         'auth_group_access' => 'auth_group_access',
         // 权限规则表
         'auth_rule'         => 'auth_rule',
         // 用户信息表
-        'member'            => 'member',            
+        'member'            => 'member',
     ];
 
     /**
@@ -74,12 +74,12 @@ class Auth
         // 判断是否有设置配置项.此配置项为数组，做一个兼容
         if (Config::get('auth')) {
             // 合并,覆盖配置
-            $this->configs = array_merge($this->configs, Config::get('auth'));    
+            $this->configs = array_merge($this->configs, Config::get('auth'));
         }
 
         // 初始化request
         $this->prefix      = self::prefix();
-        // 初始化request                 
+        // 初始化request
         $this->request     = Request::instance();
     }
 
@@ -98,7 +98,7 @@ class Auth
      * 获取表全缀
      */
     public static function prefix()
-    {   
+    {
         if (is_null(self::$is_prefix)) {
             self::$is_prefix = Config::get('database.prefix') ? Config::get('database.prefix') : '';
         }
@@ -139,7 +139,7 @@ class Auth
             }
 
             //保存验证通过的规则名
-            $list = []; 
+            $list = [];
 
             if ('url' == $mode) {
                 $REQUEST = unserialize(strtolower(serialize($this->request->param())));
@@ -218,7 +218,7 @@ class Auth
      * @param  string   $field [字典显示]
      * @return array           [权限列表]
      */
-    public function getAuthList($uid, $type, $field = '')
+    public function getAuthList($uid, $type, $field = '', $sort = 'sort')
     {
         // 保存用户验证通过的权限列表
         static $_authList = [];
@@ -239,7 +239,7 @@ class Auth
 
         if (is_administrator($uid)) {
             // 执行查询
-            $rules = Db::table($auth_rule)->where(['status'=>1])->field($field,true)->order('sort desc')->select();
+            $rules = Db::table($auth_rule)->where(['status'=>1])->field($field,true)->order($sort)->select();
         } else {
             // 获取用户所属用户组
             $groups_ids = $this->getGroups($uid);
@@ -252,7 +252,7 @@ class Auth
             ];
 
             // 获取用户组所有权限规则
-            $rules = Db::table($auth_rule)->where($map)->field($field,true)->order('sort desc')->select();
+            $rules = Db::table($auth_rule)->where($map)->field($field,true)->order($sort)->select();
         }
 
         // 循环规则，判断结果
@@ -293,7 +293,7 @@ class Auth
 
         // 获取用户表主键
         $_pk = is_string($user->getPk()) ? $user->getPk() : 'uid';
-        
+
         if (!isset($userinfo[$uid])) {
             $userinfo[$uid] = $user->where($_pk, $uid)->find();
         }
