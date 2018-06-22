@@ -1,20 +1,20 @@
 <?php
-// 权限类库
+// 类库名称：auth权限
 // +----------------------------------------------------------------------
-// | PHP version 5.4+
+// | PHP version 5.6+
 // +----------------------------------------------------------------------
-// | Copyright (c) 2012-2014 http://www.17php.cn, All rights reserved.
+// | Copyright (c) 2012-2014 http://www.myzy.com.cn, All rights reserved.
 // +----------------------------------------------------------------------
-// | Author: zhujinkui <developer@zhujinkui.com>
+// | Author: 阶级娃儿 <262877348@qq.com> 群：304104682
 // +----------------------------------------------------------------------
 
 namespace think;
 
 use think\Db;
-use think\Config;
-use think\Request;
+use think\facade\Config;
+use think\facade\Request;
 use think\Loader;
-use think\Session;
+use think\facade\Session;
 
 class Auth
 {
@@ -72,7 +72,7 @@ class Auth
     public function __construct()
     {
         // 判断是否有设置配置项.此配置项为数组，做一个兼容
-        if (Config::get('auth')) {
+        if (Config::has('auth')) {
             // 合并,覆盖配置
             $this->configs = array_merge($this->configs, Config::get('auth'));
         }
