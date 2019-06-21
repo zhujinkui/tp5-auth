@@ -246,9 +246,9 @@ class Auth
 
             // 组成获取所有权限详细信息的数组条件
             $map = [
-                'id'     => ['in', $groups_ids],
-                'type'   => $type,
-                'status' => 1,
+                ['id', 'in', $groups_ids],
+                ['type', '=', $type],
+                ['status', '=', 1]
             ];
 
             // 获取用户组所有权限规则
@@ -272,6 +272,8 @@ class Auth
                 $rules[$key]['name'] = $rule['name'];
             }
         }
+
+        return $rules;
 
         if ($this->configs['auth_type'] === 2) {
             // 规则列表结果保存到session
